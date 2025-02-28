@@ -285,24 +285,7 @@ public class CourseDetailsView extends javax.swing.JFrame {
     
     // Add Course
     private void addCourse() {
-            /*CourseDetailsDto course = new CourseDetailsDto(
-                txtCourseID.getText(),
-                txtTitle.getText(),
-                Double.parseDouble(txtCreditHours.getText()),
-                txtDeportment.getText(),
-                txtPrerequisites.getText(),
-                Integer.parseInt(txtMEC.getText())
-            );
-            
-            try{
-            String resp = courseDetailsController.addCourse(course);
-            JOptionPane.showMessageDialog(this,resp);
-            loadTable();
-            clearForm();
-            }catch(Exception e){
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(this, e.getMessage());
-            }  */
+           
              try {
         String courseId = txtCourseID.getText().trim();
         String title = txtTitle.getText().trim();
