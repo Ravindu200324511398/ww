@@ -262,27 +262,7 @@ private void add() {
         txtDepartment.setText("");
         txtContact.setText("");
     }
-   /*public void loadTable(){
-         try {
-            String columns[] = {"FacultyID", "Name", "Department", "Contact"};
-            DefaultTableModel dtm = new DefaultTableModel(columns, 0) {
-                public boolean isCellEditable(int row, int column) {
-                    return false;
-                }
-            };
-            tblFaculty.setModel(dtm);
-            
-            ArrayList<FacultyDetailsDto> FacultyDetailsDtos = facultyDetailsController.getAll();
-            for (FacultyDetailsDto faculty : FacultyDetailsDtos) {
-                Object[] rowData = {faculty.getFacultyID(),faculty.getName(),faculty.getDepartment(),faculty.getContact() };
-                dtm.addRow(rowData);
-            }
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, e.getMessage());
-        }
-    }*/
+   
     public void loadTable(){
     try {
         String columns[] = {"FacultyID", "Name", "Department", "Contact"};
