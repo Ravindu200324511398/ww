@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 9.2.0, for macos15 (arm64)
 --
--- Host: localhost    Database: CRSPROGRAM
+-- Host: localhost    Database: crs
 -- ------------------------------------------------------
 -- Server version	9.2.0
 
@@ -23,15 +23,13 @@ DROP TABLE IF EXISTS `Course_Details`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Course_Details` (
-  `CourseID` varchar(20) NOT NULL,
-  `Title` varchar(255) NOT NULL,
-  `CreditHours` int NOT NULL,
-  `Department` varchar(255) NOT NULL,
-  `prerequisites` varchar(255) DEFAULT NULL,
+  `CourseID` varchar(10) NOT NULL,
+  `Title` varchar(100) NOT NULL,
+  `CreditHours` decimal(3,1) NOT NULL,
+  `Department` varchar(50) NOT NULL,
+  `Prerequisites` text,
   `MaxEnrollmentCapacity` int NOT NULL,
-  PRIMARY KEY (`CourseID`),
-  CONSTRAINT `course_details_chk_1` CHECK ((`CreditHours` > 0)),
-  CONSTRAINT `course_details_chk_2` CHECK ((`MaxEnrollmentCapacity` > 0))
+  PRIMARY KEY (`CourseID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -41,7 +39,6 @@ CREATE TABLE `Course_Details` (
 
 LOCK TABLES `Course_Details` WRITE;
 /*!40000 ALTER TABLE `Course_Details` DISABLE KEYS */;
-INSERT INTO `Course_Details` VALUES ('C100','Computer Science',4,'Information technolagy','Pass The AL\'s',200);
 /*!40000 ALTER TABLE `Course_Details` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -53,11 +50,17 @@ DROP TABLE IF EXISTS `Enrollment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Enrollment` (
-  `StudentID` varchar(10) NOT NULL,
-  `CourseID` varchar(10) NOT NULL,
-  `Semester` varchar(20) NOT NULL,
-  `Grade` varchar(10) NOT NULL,
-  PRIMARY KEY (`StudentID`,`CourseID`,`Semester`)
+  `EnrollmentID` int NOT NULL AUTO_INCREMENT,
+  `StudentID` varchar(20) NOT NULL,
+  `CourseID` varchar(20) NOT NULL,
+  `EnrollmentDate` date NOT NULL,
+  `Status` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`EnrollmentID`),
+  KEY `StudentID` (`StudentID`),
+  KEY `CourseID` (`CourseID`),
+  CONSTRAINT `enrollment_ibfk_1` FOREIGN KEY (`StudentID`) REFERENCES `Student_Details` (`StudentID`),
+  CONSTRAINT `enrollment_ibfk_2` FOREIGN KEY (`CourseID`) REFERENCES `Course_Details` (`CourseID`),
+  CONSTRAINT `enrollment_chk_1` CHECK ((`Status` in (_utf8mb4'Enrolled',_utf8mb4'Withdrawn')))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -67,90 +70,87 @@ CREATE TABLE `Enrollment` (
 
 LOCK TABLES `Enrollment` WRITE;
 /*!40000 ALTER TABLE `Enrollment` DISABLE KEYS */;
-INSERT INTO `Enrollment` VALUES ('1000','C100','Spring-2025','A');
 /*!40000 ALTER TABLE `Enrollment` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `Faculty_Details`
+-- Table structure for table `Roles`
 --
 
-DROP TABLE IF EXISTS `Faculty_Details`;
+DROP TABLE IF EXISTS `Roles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Faculty_Details` (
-  `FacultyID` int NOT NULL,
+CREATE TABLE `Roles` (
+  `RoleID` int NOT NULL AUTO_INCREMENT,
+  `RoleName` varchar(50) NOT NULL,
+  PRIMARY KEY (`RoleID`),
+  UNIQUE KEY `RoleName` (`RoleName`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Roles`
+--
+
+LOCK TABLES `Roles` WRITE;
+/*!40000 ALTER TABLE `Roles` DISABLE KEYS */;
+INSERT INTO `Roles` VALUES (3,'Administrator'),(2,'Faculty'),(1,'Student');
+/*!40000 ALTER TABLE `Roles` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Student_details`
+--
+
+DROP TABLE IF EXISTS `Student_details`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Student_details` (
+  `StudentID` varchar(10) NOT NULL,
   `Name` varchar(100) NOT NULL,
-  `Department` varchar(100) NOT NULL,
-  `Contact` varchar(20) NOT NULL,
-  PRIMARY KEY (`FacultyID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `Faculty_Details`
---
-
-LOCK TABLES `Faculty_Details` WRITE;
-/*!40000 ALTER TABLE `Faculty_Details` DISABLE KEYS */;
-INSERT INTO `Faculty_Details` VALUES (1111,'Mr.Iwan Senarath','Information Technolgy','07765231445');
-/*!40000 ALTER TABLE `Faculty_Details` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `Student_Details`
---
-
-DROP TABLE IF EXISTS `Student_Details`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Student_Details` (
-  `StudentID` varchar(20) NOT NULL,
-  `Name` varchar(255) NOT NULL,
   `DateOfBirth` date NOT NULL,
-  `ProgramOfStudy` varchar(255) NOT NULL,
+  `ProgramOfStudy` varchar(100) NOT NULL,
   `Year` int NOT NULL,
-  `Contact` varchar(20) NOT NULL,
-  PRIMARY KEY (`StudentID`),
-  CONSTRAINT `student_details_chk_1` CHECK ((`Year` > 0))
+  `Contact` varchar(15) NOT NULL,
+  PRIMARY KEY (`StudentID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `Student_Details`
+-- Dumping data for table `Student_details`
 --
 
-LOCK TABLES `Student_Details` WRITE;
-/*!40000 ALTER TABLE `Student_Details` DISABLE KEYS */;
-INSERT INTO `Student_Details` VALUES ('1000','Ravindu','2003-09-01','Computer Science',1,'0741129660');
-/*!40000 ALTER TABLE `Student_Details` ENABLE KEYS */;
+LOCK TABLES `Student_details` WRITE;
+/*!40000 ALTER TABLE `Student_details` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Student_details` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `users`
+-- Table structure for table `Users`
 --
 
-DROP TABLE IF EXISTS `users`;
+DROP TABLE IF EXISTS `Users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `users` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `username` varchar(50) NOT NULL,
-  `password` varchar(50) NOT NULL,
-  `role_id` int NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `Users` (
+  `UserID` varchar(20) NOT NULL,
+  `Username` varchar(50) NOT NULL,
+  `Password` varchar(255) NOT NULL,
+  `RoleID` int NOT NULL,
+  PRIMARY KEY (`UserID`),
+  UNIQUE KEY `Username` (`Username`),
+  KEY `RoleID` (`RoleID`),
+  CONSTRAINT `users_ibfk_1` FOREIGN KEY (`RoleID`) REFERENCES `Roles` (`RoleID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `users`
+-- Dumping data for table `Users`
 --
 
-LOCK TABLES `users` WRITE;
-/*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (5,'Admin','Admin123',3),(6,'Faculty','Faculty123',2),(7,'Ravindu','Ravindu123',1);
-/*!40000 ALTER TABLE `users` ENABLE KEYS */;
+LOCK TABLES `Users` WRITE;
+/*!40000 ALTER TABLE `Users` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -162,4 +162,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-02-28 23:15:46
+-- Dump completed on 2025-03-02 17:36:42
